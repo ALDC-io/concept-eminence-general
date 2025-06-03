@@ -1,11 +1,12 @@
 import Dashboard from "./Dashboard";
-import { Analytics } from "@vercel/analytics/next";
+import { inject } from "@vercel/analytics";
+
+inject();
 
 function App() {
   return (
     <>
       <Dashboard />
-      <Analytics />
     </>
   );
 }
