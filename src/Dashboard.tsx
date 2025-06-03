@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { track } from "@vercel/analytics";
 import {
   ChevronLeft,
   X,
@@ -251,6 +252,11 @@ const Dashboard: React.FC = () => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
+    track("Chat Message Sent", {
+      messageLength: chatInput.length,
+      conversationLength: chatMessages.length
+    });
+
     setChatMessages([...chatMessages, { role: "user", content: chatInput }]);
 
     // Simulate Claude's response
@@ -262,6 +268,7 @@ const Dashboard: React.FC = () => {
           content: `I'll analyze that for you. Based on Éminence's current metrics, I recommend focusing on expanding spa partnerships in underserved markets while maintaining your strong sustainability scores. Would you like me to create a detailed action plan?`,
         },
       ]);
+      track("Chat Response Received");
     }, 1000);
 
     setChatInput("");
@@ -270,7 +277,16 @@ const Dashboard: React.FC = () => {
   const renderMetric = (metric: Metric) => (
     <div
       key={metric.id}
-      onClick={() => setCurrentView(metric.view)}
+      onClick={() => {
+        track("Metric Card Clicked", {
+          metricId: metric.id,
+          metricTitle: metric.title,
+          view: metric.view,
+          value: metric.value,
+          status: metric.status
+        });
+        setCurrentView(metric.view);
+      }}
       className="bg-gray-800 p-3 rounded-lg border border-gray-700 hover:border-green-500 transition-all cursor-pointer hover:shadow-lg hover:shadow-green-500/20"
     >
       <div className="flex justify-between items-start mb-1">
@@ -308,7 +324,12 @@ const Dashboard: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4 mb-6">
         <button
-          onClick={() => setCurrentView("overview")}
+          onClick={() => {
+            track("Navigation - Back to Overview", {
+              from: "business-model"
+            });
+            setCurrentView("overview");
+          }}
           className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -481,7 +502,12 @@ const Dashboard: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center gap-4 mb-6">
           <button
-            onClick={() => setCurrentView("overview")}
+            onClick={() => {
+              track("Navigation - Back to Overview", {
+                from: view
+              });
+              setCurrentView("overview");
+            }}
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -533,7 +559,10 @@ const Dashboard: React.FC = () => {
               <div className="text-2xl font-bold text-green-400">94/100</div>
             </div>
             <button
-              onClick={() => setCurrentView("business-model")}
+              onClick={() => {
+                track("Navigation - Business Model Opened");
+                setCurrentView("business-model");
+              }}
               className="p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
               title="View Business Model"
             >
@@ -645,7 +674,10 @@ const Dashboard: React.FC = () => {
 
         {/* Eclipse AI Chat */}
         <button
-          onClick={() => setChatOpen(true)}
+          onClick={() => {
+            track("Chat Opened");
+            setChatOpen(true);
+          }}
           className="fixed bottom-8 right-8 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 p-4 rounded-full shadow-lg transition-all hover:scale-110 hover:shadow-green-500/50 group"
           title="Eclipse AI Assistant"
         >
@@ -671,7 +703,10 @@ const Dashboard: React.FC = () => {
                 </span>
               </h3>
               <button
-                onClick={() => setChatOpen(false)}
+                onClick={() => {
+                  track("Chat Closed");
+                  setChatOpen(false);
+                }}
                 className="text-gray-400 hover:text-white transition-colors hover:bg-gray-700 rounded-lg p-1"
               >
                 <X className="w-5 h-5" />
