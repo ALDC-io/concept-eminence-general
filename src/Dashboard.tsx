@@ -3,20 +3,15 @@ import {
   ChevronLeft,
   X,
   MessageSquare,
-  Calendar,
   Package,
-  TrendingUp,
   Users,
   Leaf,
   Award,
-  ShoppingBag,
   Globe,
-  Star,
   Target,
   Heart,
   TreePine,
   Sparkles,
-  Building2,
 } from "lucide-react";
 
 interface Metric {
